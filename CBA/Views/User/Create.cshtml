@@ -1,0 +1,73 @@
+﻿@model CBA.Models.ViewModels.UserViewModels.CreateUserViewModel
+@{
+    ViewBag.Title = "Create";
+}
+
+<div class="layout-px-spacing">
+    <br>
+
+    <div class="row">
+        <div id="flFormsGrid" class="col-lg-12 layout-spacing">
+            <div class="statbox widget box box-shadow">
+                <div class="widget-header">
+                    <div class="row">
+                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                            <h3>Create User</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-content widget-content-area">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group mb-4">
+                            @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "" })
+                            @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control", @placeholder = "Addy" } })
+                            @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group mb-4">
+                            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "" })
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @placeholder = "adesanya@blachowicz.com" } })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-row mb-1">
+                            <div class="form-group col-md-6">
+                                @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Ade" } })
+                                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group col-md-6">
+                                @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Balogun" } })
+                                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-row mb-1">
+                            <div class="form-group col-md-6">
+                                @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "08123467895" } })
+                                @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group col-md-6">
+                                @Html.LabelFor(model => model.RoleID, htmlAttributes: new { @class = "control-label col-md-2" })
+                                
+                                @Html.DropDownListFor(model => model.RoleID, ViewBag.Roles as SelectList, "--select--", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.RoleID, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                        <input type="submit" class="btn btn-primary mt-3" value="Create">
+                    }
+
+                    <br />
+                    <i data-feather="arrow-left"></i>@Html.ActionLink("Back to List", "Index")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

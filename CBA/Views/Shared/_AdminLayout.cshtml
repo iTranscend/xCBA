@@ -1,0 +1,290 @@
+﻿@using Microsoft.AspNet.Identity
+@using System.Security.Claims
+
+@{
+    var claims = new List<Claim>() as IEnumerable<Claim>;
+    if (Request.IsAuthenticated)
+    {
+        claims = (User.Identity as ClaimsIdentity).Claims;
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+    <title>@ViewBag.Title</title>
+    <link rel="icon" type="image/x-icon" href="~/assets/img/xCBA.jpeg" />
+    <link href="~/assets/css/loader.css" rel="stylesheet" type="text/css" />
+    <script src="~/assets/js/loader.js"></script>
+
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+    <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/plugins.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+    <link href="~/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
+    @*<link href="~/assets/css/dashboard/dash_1.css" rel="stylesheet" type="text/css" />*@
+    <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+    <!-- BEGIN DATA TABLE STYLES -->
+    <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/datatables.css">
+    <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/dt-global_style.css">
+    <!-- END DATA TABLE STYLES -->
+    <!-- BEGIN SnackBar Notification STYLES -->
+    @*<link href="assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />*@
+    <link href="~/plugins/notification/snackbar/snackbar.min.css" rel="stylesheet" type="text/css" />
+    <!-- END SnackBar Notification STYLES -->
+    <!-- BEGIN LOGIN STYLES -->
+    <link href="~/assets/css/authentication/form-1.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="~/assets/css/forms/theme-checkbox-radio.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/css/forms/switches.css">
+    <!-- END LOGIN STYLES -->
+    <!--  BEGIN USER DETAILS STYLE FILE  -->
+    <link href="assets/css/users/user-profile.css" rel="stylesheet" type="text/css" />
+    <!--  END USER DETAILS STYLE FILE  -->
+
+</head>
+<body class="alt-menu sidebar-noneoverflow">
+    <!-- BEGIN LOADER -->
+    <div id="load_screen">
+        <div class="loader">
+            <div class="loader-content">
+                <div class="spinner-grow align-self-center"></div>
+            </div>
+        </div>
+    </div>
+    <!--  END LOADER -->
+    <!--  BEGIN NAVBAR  -->
+    @if (Request.IsAuthenticated)
+    {
+        <div class="header-container fixed-top">
+            <header class="header navbar navbar-expand-sm expand-header">
+                <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom">
+                    <i data-feather="menu"></i>
+                </a>
+
+                <ul class="navbar-item flex-row ml-auto">
+                    <li class="nav-item dropdown user-profile-dropdown  order-lg-0 order-1">
+                        <a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="userProfileDropdown"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i data-feather="user-check"></i>
+                        </a>
+                        <div class="dropdown-menu position-absolute e-animated e-fadeInUp"
+                             aria-labelledby="userProfileDropdown">
+                            <div class="user-profile-section">
+                                <div class="media mx-auto">
+                                    <img src="~/assets/img/90x90.jpg" class="img-fluid mr-2" alt="avatar">
+                                    <div class="media-body">
+                                        <h5>@User.Identity.GetUserName()</h5>
+                                        @*@if (Request.IsAuthenticated && claims.Any(c => c.Subject.Name.Contains("lordbanks")))
+                                            {
+                                                <p>
+                                                    Super Admin
+                                                </p>
+                                            }*@
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (!Request.IsAuthenticated)
+                            {
+                                <div class="dropdown-item">
+                                    <a href="/account/login">
+                                        <i data-feather="log-in"></i>
+                                        <span>Log In</span>
+                                    </a>
+                                </div>
+                            }
+                            @if (Request.IsAuthenticated)
+                            {
+                                <div class="dropdown-item">
+                                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <a href="javascript:document.getElementById('logoutForm').submit()">
+                                            <i data-feather="log-out"></i>
+                                            <span>Log Out</span>
+                                        </a>
+                                    }
+                                </div>
+                            }
+                            @if (Request.IsAuthenticated)
+                            {
+                                <div class="dropdown-item">
+                                    <a href="/account/ChangePassword">
+                                        <i data-feather="lock"></i>
+                                        <span>Change Password</span>
+                                    </a>
+                                </div>
+                            }
+                            @if (Request.IsAuthenticated)
+                            {
+                                <div class="dropdown-item">
+                                    <a href="/account/ForgotPassword">
+                                        <i data-feather="key"></i>
+                                        <span>Forgot Password</span>
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </li>
+                </ul>
+            </header>
+        </div>
+    }
+    <!--  END NAVBAR  -->
+    <!--  BEGIN MAIN CONTAINER  -->
+    <div class="main-container sidebar-closed sbar-open" id="container">
+
+        <div class="overlay"></div>
+        <div class="cs-overlay"></div>
+        <div class="search-overlay"></div>
+
+        <!--  BEGIN SIDEBAR  -->
+        @if (Request.IsAuthenticated)
+        {
+            <div class="sidebar-wrapper sidebar-theme">
+                <nav id="sidebar">
+                    <ul class="navbar-nav theme-brand flex-row  text-center">
+                        <li class="nav-item theme-logo">
+                            <a href="/home/index">
+                                <img src="~/assets/img/xCBA.jpeg" class="navbar-logo" alt="logo">
+                            </a>
+                        </li>
+                        <li class="nav-item theme-text">
+                            <a href="/home/index" class="nav-link"> xCBA </a>
+                        </li>
+                    </ul>
+
+                    <ul class="list-unstyled menu-categories" id="accordionExample">
+                        <li class="menu">
+                            <a href="/home/index" aria-expanded="true" class="dropdown-toggle">
+                                <div class="">
+                                    <i data-feather="home"></i>
+                                    <span>Dashboard</span>
+                                </div>
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="menu menu-heading">
+                            <div class="heading">
+                                <i data-feather="circle"></i>
+                            </div>
+                        </li>
+                        <!-- <br> -->
+                        <li class="menu">
+                            <a href="#roles" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                                <div class="">
+                                    <i data-feather="key"></i>
+                                    <span>Roles</span>
+                                </div>
+                                <div>
+                                    <i data-feather="chevron-right"></i>
+                                </div>
+                            </a>
+                            <ul class="collapse submenu list-unstyled" id="roles" data-parent="#accordionExample">
+                                <li>
+                                    <a href="/role/roleclaims"> View Roles </a>
+                                </li>
+                                <li>
+                                    <a href="/role/create"> Create Role </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="menu">
+                            <a href="#users" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                                <div class="">
+                                    <i data-feather="users"></i>
+                                    <span>User</span>
+                                </div>
+                                <div>
+                                    <i data-feather="chevron-right"></i>
+                                </div>
+                            </a>
+                            <ul class="collapse submenu list-unstyled" id="users" data-parent="#accordionExample">
+                                @if (claims.Any(c => c.Value.Equals("ViewListOfUsers")))
+                                {
+                                    <li>
+                                        <a href="/user/index"> View Users </a>
+                                    </li>
+                                }
+                                @if (claims.Any(c => c.Value.Equals("AddNewUser")))
+                                {
+                                    <li>
+                                        <a href="/user/create"> Create User </a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+
+                </nav>
+
+            </div>
+        }
+        <!--  END SIDEBAR  -->
+        <!--  BEGIN CONTENT AREA  -->
+        <div id="content" class="main-content">
+            @RenderBody()
+        </div>
+        <!--  END CONTENT AREA  -->
+        @*@if (Request.IsAuthenticated)
+            {
+                <footer><p> &copy;@DateTime.Now.Year xCBA</p></footer>
+            }*@
+    </div>
+    <!-- END MAIN CONTAINER -->
+    <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script type="text/javascript">
+        feather.replace();
+    </script>
+    <script src="~/assets/js/libs/jquery-3.1.1.min.js"></script>
+    <script src="~/bootstrap/js/popper.min.js"></script>
+    <script src="~/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="~/assets/js/app.js"></script>
+    <script>
+        $(document).ready(function () {
+            App.init();
+        });
+    </script>
+    <script src="~/assets/js/custom.js"></script>
+    <!-- END GLOBAL MANDATORY SCRIPTS -->
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+    <script src="~/plugins/apex/apexcharts.min.js"></script>
+    <script src="~/assets/js/dashboard/dash_1.js"></script>
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+    <!-- BEGIN DATA TABLE SCRIPTS -->
+    <script src="~/plugins/table/datatable/datatables.js"></script>
+    <script>
+        $('#zero-config').DataTable({
+            "oLanguage": {
+                "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                "sInfo": "Showing page _PAGE_ of _PAGES_",
+                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                "sSearchPlaceholder": "Search...",
+                "sLengthMenu": "Results :  _MENU_",
+            },
+            "stripeClasses": [],
+            "lengthMenu": [5, 10, 20, 30],
+            "pageLength": 10
+        });
+    </script>
+    <!-- END DATA TABLE SCRIPTS -->
+    <!-- BEGIN SnackBar Notification SCRIPTS -->
+    <script src="~/plugins/notification/snackbar/snackbar.min.js"></script>
+    <script src="~/assets/js/components/notification/custom-snackbar.js"></script>
+    <!-- END SnackBar Notification SCRIPTS -->
+    <!-- BEGIN Login SCRIPTS -->
+    <script src="~/assets/js/authentication/form-1.js"></script>
+    <!-- END Login SCRIPTS -->
+    @*@RenderSection("scripts", required: false)*@
+</body>
+</html>

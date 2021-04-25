@@ -1,0 +1,163 @@
+﻿
+@model IEnumerable<CBA.Models.Models.ApplicationUser>
+@{
+    ViewBag.Title = "Users";
+}
+@using Microsoft.AspNet.Identity
+@using System.Security.Claims
+
+@{
+    var claims = new List<Claim>() as IEnumerable<Claim>;
+    if (Request.IsAuthenticated)
+    {
+        claims = (User.Identity as ClaimsIdentity).Claims;
+    }
+}
+@if (TempData["DeactivateUserSuccess"] != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            Snackbar.show({
+                text: "User Deactivated Successfully",
+                pos: 'top-right',
+                actionTextColor: '#fff',
+                backgroundColor: '#e7515a'
+            });
+        }
+    </script>
+}
+@if (TempData["ActivateUserSuccess"] != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            Snackbar.show({
+                text: "User Activated Successfully",
+                pos: 'top-right',
+                actionTextColor: '#fff',
+                backgroundColor: '#8dbf42'
+            });
+        }
+    </script>
+}
+@if (TempData["DeleteUserSuccess"] != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            Snackbar.show({
+                text: "User Deleted Successfully",
+                pos: 'top-right',
+                actionTextColor: '#fff',
+                backgroundColor: '#e7515a'
+            });
+        }
+    </script>
+}
+@if (TempData["EditUserSuccess"] != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            Snackbar.show({
+                text: "User Edited Successfully",
+                pos: 'top-right',
+                actionTextColor: '#fff',
+                backgroundColor: '#e2a03f'
+            });
+        }
+    </script>
+}
+<div class="layout-px-spacing">
+    <div class="page-header">
+        <div class="page-title">
+            <h2>Role and Claims</h2>
+        </div>
+    </div>
+    <p>
+        @Html.ActionLink("Create New User", "Create", new { @class = "btn btn-info" })
+    </p>
+    <div class="row" id="cancel-row">
+
+        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <div class="table-responsive mb-4 mt-4">
+                    <table id="zero-config" class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Full Name</th>
+                                <th>@Html.DisplayNameFor(model => model.Email)</th>
+                                <th>@Html.DisplayNameFor(model => model.UserName)</th>
+                                <th>@Html.DisplayNameFor(model => model.PhoneNumber)</th>
+                                <th>@Html.DisplayName("Role")</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Email)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.UserName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Role.Name)
+                                    </td>
+                                    <td>
+                                        <div class="btn-group dropright mb-4 mr-2" role="group">
+                                            <button id="btnDropRight" type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action <i data-feather="chevron-right"></i></button>
+                                            <div class="dropdown-menu" aria-labelledby="btnDropRight">
+                                                @if (claims.Any(c => c.Value.Equals("EditUserInformation")))
+                                                {
+                                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-warning dropdown-item" })
+                                                }
+                                                @if (claims.Any(c => c.Value.Equals("ViewListOfUsers")))
+                                                {
+                                                    @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-primary dropdown-item" })
+                                                }
+                                                @if (claims.Any(c => c.Value.Equals("EditUserInformation")))
+                                                {
+                                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger dropdown-item" })
+                                                }
+
+                                                <div class="divider dropdown-item"></div>
+                                                @if (item.Status == CBA.Models.Models.Status.Active)
+                                                {
+                                                    @Html.ActionLink("Disable", "ToggleStatus", new { id = item.Id }, new { @class = "btn btn-danger dropdown-item" })
+
+                                                }
+                                                else
+                                                {
+                                                    @Html.ActionLink("Enable", "ToggleStatus", new { id = item.Id }, new { @class = "btn btn-success dropdown-item" })
+                                                }
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Full Name</th>
+                                <th>@Html.DisplayNameFor(model => model.Email)</th>
+                                <th>@Html.DisplayNameFor(model => model.UserName)</th>
+                                <th>@Html.DisplayNameFor(model => model.PhoneNumber)</th>
+                                <th>@Html.DisplayName("Role")</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

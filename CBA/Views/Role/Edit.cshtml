@@ -1,0 +1,82 @@
+﻿@model CBA.Models.ViewModels.RoleViewModels.EditRoleViewModel
+@using CBA.Models.Models;
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<div class="layout-px-spacing">
+    <br>
+    @if (TempData["EditError"] != null)
+    {
+        <script type="text/javascript">
+                window.onload = function () {
+                    Snackbar.show({
+                        text: "Something went wrong. Try again",
+                        pos: 'top-right',
+                        actionTextColor: '#fff',
+                        backgroundColor: '#e7515a'
+                    });
+                }
+        </script>
+    }
+    <div class="row">
+        <div id="flFormsGrid" class="col-lg-12 layout-spacing">
+            <div class="statbox widget box box-shadow">
+                <div class="widget-header">
+                    <div class="row">
+                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                            <h3>Edit Role</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-content widget-content-area">
+                    @using (Html.BeginForm("Edit", "Role"))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @Html.HiddenFor(model => model.RoleId)
+                        @Html.HiddenFor(model => model.Name)
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group mb-4">
+                            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "" })
+                            @Html.EditorFor(model => model.Role.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = Model.Role.Name } })
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                        </div>
+
+                        <label>Select Role Claims</label>
+                        <div class="form-row mb-3" style="padding-left: 25px;">
+                            @{
+                                int id = 1;
+                                foreach (var claim in ViewBag.Claims as IEnumerable<Claim>)
+                                {
+                                    if (Model.RoleClaims.Where(x => x.Claim.Name == claim.Name).Any())
+                                    {
+                                        <div class="custom-control input-group custom-checkbox col-sm-3">
+                                            <input class="custom-control-input" type="checkbox" name="ClaimIDs" id="@id" value="@claim.ID" checked>
+                                            <label class="custom-control-label" for="@id">@claim.Name</label>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="custom-control input-group custom-checkbox col-sm-3">
+                                            <input class="custom-control-input" type="checkbox" name="ClaimIDs" id="@id" value="@claim.ID">
+                                            <label class="custom-control-label" for="@id">@claim.Name</label>
+                                        </div>
+                                    }
+                                    id++;
+                                }
+                            }
+                        </div>
+
+                        <input type="submit" class="btn btn-primary mt-3" value="Save">
+                    }
+                    <br>
+                    <i data-feather="arrow-left"></i>@Html.ActionLink("Back to List", "RoleClaims")
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

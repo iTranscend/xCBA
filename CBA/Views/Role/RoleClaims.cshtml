@@ -1,0 +1,158 @@
+﻿@using CBA.Models.Models;
+@model IEnumerable<CBA.Models.ViewModels.RoleViewModels.RoleClaimsViewModel>
+@{
+    ViewBag.Title = "RoleClaims";
+}
+
+<div class="layout-px-spacing">
+    <div class="page-header">
+        <div class="page-title">
+            <h2>Role and Claims</h2>
+        </div>
+    </div>
+    <p>
+        @Html.ActionLink("Create New Role", "Create")
+    </p>
+    <div class="row" id="cancel-row">
+        @if (TempData["CreateRoleSuccess"] != null)
+        {
+            <script type="text/javascript">
+                window.onload = function () {
+                    Snackbar.show({
+                        text: "Role Created Successfully",
+                        pos: 'top-right',
+                        actionTextColor: '#fff',
+                        backgroundColor: '#8dbf42'
+                    });
+                }
+            </script>
+        }
+        @if (TempData["EditRoleSuccess"] != null)
+        {
+            <script type="text/javascript">
+                window.onload = function () {
+                    Snackbar.show({
+                        text: "Role Edited Successfully",
+                        pos: 'top-right',
+                        actionTextColor: '#fff',
+                        backgroundColor: '#e2a03f'
+                    });
+                }
+            </script>
+        }
+        @if (TempData["DeleteRoleSuccess"] != null)
+        {
+            <script type="text/javascript">
+                window.onload = function () {
+                    Snackbar.show({
+                        text: "Role Deleted Successfully",
+                        pos: 'top-right',
+                        actionTextColor: '#fff',
+                        backgroundColor: '#e7515a'
+                    });
+                }
+            </script>
+        }
+        @if (TempData["DeactivateRoleSuccess"] != null)
+        {
+            <script type="text/javascript">
+                window.onload = function () {
+                    Snackbar.show({
+                        text: "Role Deactivated Successfully",
+                        pos: 'top-right',
+                        actionTextColor: '#fff',
+                        backgroundColor: '#e7515a'
+                    });
+                }
+            </script>
+        }
+        @if (TempData["ActivateRoleSuccess"] != null)
+        {
+            <script type="text/javascript">
+                window.onload = function () {
+                    Snackbar.show({
+                        text: "Role Activated Successfully",
+                        pos: 'top-right',
+                        actionTextColor: '#fff',
+                        backgroundColor: '#8dbf42'
+                    });
+                }
+            </script>
+        }
+
+        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+
+                <div class="table-responsive mb-4 mt-4">
+                    <table id="zero-config" class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Roles</th>
+                                <th>Claims</th>
+                                <th class="no-content">Toggle Status</th>
+                                <th class="no-content"></th>
+                                <th class="no-content"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.Role.Name
+                                    </td>
+                                    <td>
+                                        @{var s = "";
+                                        }
+                                        @foreach (var claim in item.RoleClaims)
+                                        {
+
+
+                                            s = s + " " + claim.Claim.Name + " | ";
+
+                                        }
+                                        <span>@s </span>
+
+
+
+                                    </td>
+                                    <td>
+                                        @if (item.Role.Status == CBA.Models.Models.Status.Active)
+                                        {
+                                            @Html.ActionLink("Deactivate", "ToggleStatus", new { id = item.Role.ID }, new { @class = "btn btn-danger" })
+
+                                        }
+                                        else
+                                        {
+                                            @Html.ActionLink("Activate", "ToggleStatus", new { id = item.Role.ID }, new { @class = "btn btn-success" })
+
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Edit", "Edit", new { id = item.Role.ID }, new { @class = "btn btn-warning" })
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Delete", "Delete", new { id = item.Role.ID }, new { @class = "btn btn-danger" })
+
+                                    </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Role</th>
+                                <th>Claims</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
